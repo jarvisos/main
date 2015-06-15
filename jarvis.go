@@ -26,8 +26,11 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/jarvisos/main/appserverclient"
 	"github.com/jarvisos/main/processstack"
 	"os"
+	"strings"
+	"time"
 )
 
 // The entry point for Jarvis OS. This creates all other necessary Jarvis
@@ -42,9 +45,21 @@ func main() {
 	}
 	fmt.Printf("\n")
 
+	appServer, err := appserverclient.NewClient("localhost:7491", time.Second)
+	if err != nil {
+		fmt.Printf("Error connecting to app server: %v\n", err)
+		return
+	}
+
 	// Main loop
 	for in := ""; in != "exit\n"; in = getInput() {
-		// Do whatever
+		if strings.HasPrefix(in, "exec") {
+			call := strings.TrimPrefix(in, "exec")
+			_, err := appServer.DirectCall(call)
+			if err != nil {
+				fmt.Printf("Error making direct call: %v\n", err)
+			}
+		}
 	}
 
 	// Shutdown processes
