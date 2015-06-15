@@ -24,11 +24,44 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"os/exec"
 )
 
 // The entry point for Jarvis OS. This creates all other necessary Jarvis
 // processes.
 func main() {
-	fmt.Printf("Jarvis OS Here.\n")
+	fmt.Printf("Jarvis OS\n\n")
+
+	// Start nlp
+	fmt.Printf("Starting NLP...\n")
+	nlpProcess := exec.Command("nlp")
+	err := nlpProcess.Start()
+	if err != nil {
+		fmt.Printf("Couldn't initialize NLP process: %v\n", err)
+		return
+	}
+
+	// Main loop
+	for in := ""; in != "exit\n"; in = getInput() {
+		// Do whatever
+	}
+
+	// Shutdown nlp
+	nlpProcess.Wait()
+}
+
+// Loop for taking commands
+func getInput() string {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf("[Jarvis OS]$ ")
+	in, err := reader.ReadString('\n')
+	if err != nil {
+		return ""
+	}
+
+	return in
 }
