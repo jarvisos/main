@@ -26,8 +26,8 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/jarvisos/main/processstack"
 	"os"
-	"os/exec"
 )
 
 // The entry point for Jarvis OS. This creates all other necessary Jarvis
@@ -35,25 +35,23 @@ import (
 func main() {
 	fmt.Printf("Jarvis OS\n\n")
 
-	// Start nlp
-	fmt.Printf("Starting NLP...\n")
-	nlpProcess := exec.Command("nlp")
-	err := nlpProcess.Start()
+	// Start processes
+	err := processstack.StartProcesses()
 	if err != nil {
-		fmt.Printf("Couldn't initialize NLP process: %v\n", err)
 		return
 	}
+	fmt.Printf("\n")
 
 	// Main loop
 	for in := ""; in != "exit\n"; in = getInput() {
 		// Do whatever
 	}
 
-	// Shutdown nlp
-	nlpProcess.Wait()
+	// Shutdown processes
+	processstack.WaitProcesses()
 }
 
-// Loop for taking commands
+// Get user input
 func getInput() string {
 	reader := bufio.NewReader(os.Stdin)
 
