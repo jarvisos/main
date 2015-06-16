@@ -25,7 +25,10 @@ package processstack
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"os/exec"
+	"time"
 )
 
 func StartProcesses() error {
@@ -36,11 +39,23 @@ func WaitProcesses() {
 	processStack.waitProcesses()
 }
 
+func PrintStdout() {
+	// io.Copy(os.Stdout, processStack.out.nlp)
+	go io.Copy(os.Stdout, processStack.out.appserver)
+}
+
 var processStack processes
 
 type processes struct {
 	nlp       *exec.Cmd
 	appserver *exec.Cmd
+
+	out output
+}
+
+type output struct {
+	nlp       io.Reader
+	appserver io.Reader
 }
 
 // Generate the processes
@@ -61,11 +76,19 @@ func (proc *processes) startProcesses() error {
 		return err
 	}
 
+	time.Sleep(time.Second)
+
+	proc.out.nlp, _ = proc.nlp.StdoutPipe()
+	proc.out.appserver, _ = proc.appserver.StdoutPipe()
+
 	return nil
 }
 
 // Wait for processes to terminate
 func (proc *processes) waitProcesses() {
+	proc.appserver.Process.Kill()
+	proc.nlp.Process.Kill()
+
 	proc.appserver.Wait()
 	proc.nlp.Wait()
 }

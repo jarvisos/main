@@ -27,7 +27,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/jarvisos/main/appserverclient"
-	"github.com/jarvisos/main/processstack"
 	"os"
 	"strings"
 	"time"
@@ -39,11 +38,11 @@ func main() {
 	fmt.Printf("Jarvis OS\n\n")
 
 	// Start processes
-	err := processstack.StartProcesses()
+	/* err := processstack.StartProcesses()
 	if err != nil {
 		return
 	}
-	fmt.Printf("\n")
+	fmt.Printf("\n") */
 
 	appServer, err := appserverclient.NewClient("localhost:7491", time.Second)
 	if err != nil {
@@ -60,10 +59,11 @@ func main() {
 				fmt.Printf("Error making direct call: %v\n", err)
 			}
 		}
+		//processstack.PrintStdout()
 	}
 
 	// Shutdown processes
-	processstack.WaitProcesses()
+	//processstack.WaitProcesses()
 }
 
 // Get user input
