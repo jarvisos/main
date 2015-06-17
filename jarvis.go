@@ -26,7 +26,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/jarvisos/main/appserverclient"
+	"github.com/jarvisos/appserver/nlpclient"
 	"os"
 	"strings"
 	"time"
